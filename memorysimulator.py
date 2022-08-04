@@ -5,8 +5,17 @@ contagemTrocasOtimo = 0
 def FIFO():
     moldura = []
     nPaginas = []
-    sequenciaPags = [1, 2, 7, 2, 3, 2, 2, 3, 4, 2, 1, 3, 1, 4, 5, 5, 6, 1, 3, 2, 6, 7, 7, 7, 8]
-    tamanhoMoldura = 4
+    sequenciaPags = []
+    tamanhoMoldura = 0
+    ## abrindo arquivo (tem que fazer funcionar para todas as linhas)
+    with open ("inMemoria.txt", "r") as arquivo:
+        arquivo = arquivo.readline()
+        arquivo = arquivo.split("|")
+        tamanhoMoldura = int(arquivo[0])
+        sequenciaPags = arquivo[2].split(" ")
+        for i in range(len(sequenciaPags)):
+            sequenciaPags[i] = int(sequenciaPags[i])
+    ## 
     global contagemTrocasFIFO
     for j in range(len(sequenciaPags)):
         if tamanhoMoldura == len(moldura):

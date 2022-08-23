@@ -46,4 +46,5 @@ def otimo():
 def main():
     pass
 
-FIFO()
+if __name__ == "__main__":
+    FIFO()

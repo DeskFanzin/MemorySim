@@ -3,7 +3,7 @@ contagemTrocasMRU = 0
 contagemTrocasNUF = 0
 contagemTrocasOtimo = 0
 sequenciaPags = []
-tamanhoMoldura = 0
+tamanhoMoldura = []
 moldura = []
 def FIFO():
     global sequenciaPags
@@ -37,6 +37,29 @@ def FIFO():
     print(contagemTrocasFIFO)
     print(moldura)        
 
+def newFIFO():
+    global sequenciaPags
+    global tamanhoMoldura
+    global moldura
+    global contagemTrocasFIFO
+    for j in range(len(sequenciaPags)):
+        if tamanhoMoldura == len(moldura):
+            if sequenciaPags[j] in moldura:
+                pass
+            else:
+                moldura.pop(0)
+                moldura.append(sequenciaPags[j])
+                contagemTrocasFIFO += 1
+        else:
+            if sequenciaPags[j] in moldura:
+                pass
+            else:
+                moldura.append(sequenciaPags[j])
+                contagemTrocasFIFO += 1
+    print(contagemTrocasFIFO)
+    print(moldura)  
+
+
 def MRU():
     global contagemTrocasMRU
 
@@ -58,6 +81,6 @@ if __name__ == "__main__":
         novaseqpag =[]
         for i in sequenciaPags:
             novaseqpag.append(i[2].replace("\n", ""))
+            tamanhoMoldura.append(i[0])
         sequenciaPags = novaseqpag
-    
     FIFO()

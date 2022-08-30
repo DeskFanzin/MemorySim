@@ -4,19 +4,21 @@ contagemTrocasNUF = 0
 contagemTrocasOtimo = 0
 sequenciaPags = []
 tamanhoMoldura = []
-def FIFO():
+
+def FIFO(): ##utilize o newFIFO##
     global sequenciaPags
     global tamanhoMoldura
     global contagemTrocasFIFO
     moldura = []
     ## abrindo arquivo (tem que fazer funcionar para todas as linhas, e não mudei nada além de deixar algumas variáveis globais)
-    with open ("inMemoria.txt", "r") as arquivo:
+    with open ("teste.txt", "r") as arquivo:
         arquivo = arquivo.readline()
         arquivo = arquivo.split("|")
         tamanhoMoldura = int(arquivo[0])
         sequenciaPags = arquivo[2].split(" ")
         for i in range(len(sequenciaPags)):
             sequenciaPags[i] = int(sequenciaPags[i])
+        print(sequenciaPags)
     ## 
     for j in range(len(sequenciaPags)):
         if tamanhoMoldura == len(moldura):
@@ -40,6 +42,7 @@ def newFIFO():
     global sequenciaPags
     global tamanhoMoldura
     moldura = []
+
     for i in range(len(tamanhoMoldura)):
         tamanhoMoldura[i] = int(tamanhoMoldura[i]) ## transforma em inteiro cada um dos tamanhos da moldura
         for j in range(len(sequenciaPags[i])):
@@ -78,4 +81,8 @@ if __name__ == "__main__":
             linha = linha.split("|")
             sequenciaPags.append(linha[2].split(" ")) ##separa a string em uma lista com os números (sendo estes strings)
             tamanhoMoldura.append(linha[0])
+        ## transforma em inteiros a sequencia de paginas
+        for i in range(len(sequenciaPags)):
+            for j in range(len(sequenciaPags[i])):
+                sequenciaPags[i][j] = int(sequenciaPags[i][j])
         newFIFO()

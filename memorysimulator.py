@@ -73,9 +73,10 @@ def MRU():
     tempodeUso = {}
     ##criando a lista com o tempo sem uso de cada página
     for i in range(len(quantPags)):
-        for j in range(quantPags[i]):
-            tempodeUso[i] = 0
-        print(tempodeUso)    
+        for j in range(1, quantPags[i]+1):
+            tempodeUso[j] = 0
+        print(tempodeUso)
+        tempodeUso.clear()
     ## inicio da lógica
     '''for i in range(len(tamanhoMoldura)):
         for j in range(len(sequenciaPags[i])):

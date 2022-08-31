@@ -1,9 +1,13 @@
+from ast import Index
+
+
 contagemTrocasFIFO = 0
 contagemTrocasMRU = 0
 contagemTrocasNUF = 0
 contagemTrocasOtimo = 0
 sequenciaPags = []
 tamanhoMoldura = []
+quantPags = []
 
 def FIFO(): ##utilize o newFIFO##
     global sequenciaPags
@@ -44,7 +48,6 @@ def newFIFO():
     moldura = []
 
     for i in range(len(tamanhoMoldura)):
-        tamanhoMoldura[i] = int(tamanhoMoldura[i]) ## transforma em inteiro cada um dos tamanhos da moldura
         for j in range(len(sequenciaPags[i])):
             if tamanhoMoldura[i] == len(moldura):
                 if sequenciaPags[i][j] in moldura:
@@ -64,7 +67,43 @@ def newFIFO():
         contagemTrocasFIFO = 0
 def MRU():
     global contagemTrocasMRU
-
+    global sequenciaPags
+    global tamanhoMoldura
+    moldura = []
+    tempodeUso = {}
+    ##criando a lista com o tempo sem uso de cada página
+    for i in range(len(quantPags)):
+        for j in range(quantPags[i]):
+            tempodeUso[i] = 0
+        print(tempodeUso)    
+    ## inicio da lógica
+    '''for i in range(len(tamanhoMoldura)):
+        for j in range(len(sequenciaPags[i])):
+            if tamanhoMoldura[i] == len(moldura):
+                if sequenciaPags[i][j] in moldura:
+                    ##adiciona 1 ao tempo de uso da página
+                    tempodeUso[moldura.index(sequenciaPags[i][j])] += 1
+                else:
+                    try:
+                        moldura.pop(tempodeUso.index(min(tempodeUso)))
+                    except:
+                        pass
+                    moldura.append(sequenciaPags[i][j])
+                    contagemTrocasMRU += 1
+            else:
+                if sequenciaPags[i][j] in moldura:
+                    try:
+                        tempodeUso[moldura.index(sequenciaPags[i][j])] += 1
+                    except IndexError:
+                        pass
+                else:
+                    moldura.append(sequenciaPags[i][j])
+                    contagemTrocasMRU += 1
+        moldura.clear()
+        print(contagemTrocasMRU)
+        contagemTrocasMRU = 0
+        tempodeUso.clear()'''
+    print(tempodeUso)
 def NUF():
     global contagemTrocasNUF
 
@@ -81,8 +120,11 @@ if __name__ == "__main__":
             linha = linha.split("|")
             sequenciaPags.append(linha[2].split(" ")) ##separa a string em uma lista com os números (sendo estes strings)
             tamanhoMoldura.append(linha[0])
-        ## transforma em inteiros a sequencia de paginas
+            quantPags.append(linha[1])
+        ## transforma em inteiros a sequencia de paginas e o tamanho da moldura
         for i in range(len(sequenciaPags)):
+            tamanhoMoldura[i] = int(tamanhoMoldura[i])
+            quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
-        newFIFO()
+        MRU()

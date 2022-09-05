@@ -1,6 +1,3 @@
-from ast import Index
-
-
 contagemTrocasFIFO = 0
 contagemTrocasMRU = 0
 contagemTrocasNUF = 0
@@ -65,6 +62,7 @@ def newFIFO():
         moldura.clear()
         print(contagemTrocasFIFO)
         contagemTrocasFIFO = 0
+
 def MRU():
     global contagemTrocasMRU
     global sequenciaPags
@@ -76,33 +74,31 @@ def MRU():
         for j in range(1, quantPags[i]+1):
             tempodeUso[j] = 0
     ## inicio da lógica
-        for i in range(len(tamanhoMoldura)):
-            for j in range(len(sequenciaPags[i])):
-                if tamanhoMoldura[i] == len(moldura):
-                    if sequenciaPags[i][j] in moldura:
-                        ##adiciona 1 ao tempo de uso da página
-                        tempodeUso[sequenciaPags[i][j]] += 1
-                    else:
-                        ##verifica qual página tem o menor tempo de uso e a substitui
-                        menor = 0
-                        for k in range(len(moldura)):
-                            if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:
-                                menor = k
-                        moldura.pop(menor)
-                        moldura.append(sequenciaPags[i][j])
-                        contagemTrocasMRU += 1
+        for j in range(len(sequenciaPags[i])):
+            if tamanhoMoldura[i] == len(moldura):
+                if sequenciaPags[i][j] in moldura:
+                    ##adiciona 1 ao tempo de uso da página
+                    tempodeUso[sequenciaPags[i][j]] += 1
                 else:
-                    if sequenciaPags[i][j] in moldura:
-                        tempodeUso[sequenciaPags[i][j]] += 1
-                    else:
-                        moldura.append(sequenciaPags[i][j])
-                        contagemTrocasMRU += 1
-            moldura.clear()
-            print(contagemTrocasMRU)
-            contagemTrocasMRU = 0
+                    ##verifica qual página tem o menor tempo de uso e a substitui
+                    menor = 0
+                    for k in range(len(moldura)):
+                        if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:
+                            menor = k
+                    moldura.pop(menor)
+                    moldura.append(sequenciaPags[i][j])
+                    contagemTrocasMRU += 1
+            else:
+                if sequenciaPags[i][j] in moldura:
+                    tempodeUso[sequenciaPags[i][j]] += 1
+                else:
+                    moldura.append(sequenciaPags[i][j])
+                    contagemTrocasMRU += 1
+        moldura.clear()
+        print(contagemTrocasMRU)
+        contagemTrocasMRU = 0
         tempodeUso.clear()
 
-    print(tempodeUso)
 
 def NUF():
     global contagemTrocasNUF
@@ -126,3 +122,4 @@ if __name__ == "__main__":
             quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
+    MRU()

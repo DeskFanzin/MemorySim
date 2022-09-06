@@ -77,8 +77,9 @@ def MRU():
         for j in range(len(sequenciaPags[i])):
             if tamanhoMoldura[i] == len(moldura):
                 if sequenciaPags[i][j] in moldura:
-                    ##adiciona 1 ao tempo de uso da página
-                    tempodeUso[sequenciaPags[i][j]] += 1
+                    ##adiciona 1 ao tempo de uso da página para cada pagina na moldura
+                    for k in moldura:
+                        tempodeUso[k] += 1
                 else:
                     ##verifica qual página tem o menor tempo de uso e a substitui
                     menor = 0
@@ -87,16 +88,22 @@ def MRU():
                             menor = k
                     moldura.pop(menor)
                     moldura.append(sequenciaPags[i][j])
+                    for k in moldura:
+                        tempodeUso[k] += 1
                     contagemTrocasMRU += 1
             else:
                 if sequenciaPags[i][j] in moldura:
-                    tempodeUso[sequenciaPags[i][j]] += 1
+                    for k in moldura:
+                        tempodeUso[k] += 1
                 else:
                     moldura.append(sequenciaPags[i][j])
+                    for k in moldura:
+                        tempodeUso[k] += 1
                     contagemTrocasMRU += 1
         moldura.clear()
         print(contagemTrocasMRU)
         contagemTrocasMRU = 0
+        print(tempodeUso)
         tempodeUso.clear()
 
 

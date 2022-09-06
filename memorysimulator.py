@@ -82,7 +82,7 @@ def MRU():
                 else:
                     ##verifica qual página tem o menor tempo de uso e a substitui
                     menor = 0
-                    for k in range(len(moldura)):
+                    for k in range(len(sorted(moldura))):
                         if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:
                             menor = k
                     moldura.pop(menor)

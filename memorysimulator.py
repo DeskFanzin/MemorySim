@@ -64,6 +64,9 @@ def newFIFO():
         contagemTrocasFIFO = 0
 
 def MRU():
+    pass
+
+def NUF():
     global contagemTrocasMRU
     global sequenciaPags
     global tamanhoMoldura
@@ -78,37 +81,27 @@ def MRU():
             if tamanhoMoldura[i] == len(moldura):
                 if sequenciaPags[i][j] in moldura:
                     ##adiciona 1 ao tempo de uso da página para cada pagina na moldura
-                    for k in moldura:
-                        tempodeUso[k] += 1
+                    tempodeUso[sequenciaPags[i][j]] += 1
                 else:
                     ##verifica qual página tem o menor tempo de uso e a substitui
                     ## O ERRO PROVAVELMENTE TÁ AQUI
-                    menor = 0
-                    for k in range(len(sorted(moldura))):
-                        if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:                            
-                            menor = k
-                    moldura.remove(moldura[menor])
+                    tempodeUsoMoldura = {}
+                    for k in sorted(moldura):
+                        tempodeUsoMoldura[k] = tempodeUso[k]
+                    menor = min(tempodeUsoMoldura, key=tempodeUsoMoldura.get)
+                    moldura.pop(moldura.index(menor))
                     moldura.append(sequenciaPags[i][j])
-                    for k in moldura:
-                        tempodeUso[k] += 1
                     contagemTrocasMRU += 1
             else:
                 if sequenciaPags[i][j] in moldura:
-                    for k in moldura:
-                        tempodeUso[k] += 1
+                    tempodeUso[sequenciaPags[i][j]] += 1
                 else:
                     moldura.append(sequenciaPags[i][j])
-                    for k in moldura:
-                        tempodeUso[k] += 1
                     contagemTrocasMRU += 1
         moldura.clear()
         print(contagemTrocasMRU)
         contagemTrocasMRU = 0
         tempodeUso.clear()
-
-
-def NUF():
-    global contagemTrocasNUF
 
 def otimo():
     global contagemTrocasOtimo
@@ -129,4 +122,4 @@ if __name__ == "__main__":
             quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
-    MRU()
+    NUF()

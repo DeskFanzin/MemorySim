@@ -82,11 +82,12 @@ def MRU():
                         tempodeUso[k] += 1
                 else:
                     ##verifica qual página tem o menor tempo de uso e a substitui
+                    ## O ERRO PROVAVELMENTE TÁ AQUI
                     menor = 0
                     for k in range(len(sorted(moldura))):
-                        if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:
+                        if tempodeUso[moldura[k]] < tempodeUso[moldura[menor]]:                            
                             menor = k
-                    moldura.pop(menor)
+                    moldura.remove(moldura[menor])
                     moldura.append(sequenciaPags[i][j])
                     for k in moldura:
                         tempodeUso[k] += 1
@@ -103,7 +104,6 @@ def MRU():
         moldura.clear()
         print(contagemTrocasMRU)
         contagemTrocasMRU = 0
-        print(tempodeUso)
         tempodeUso.clear()
 
 

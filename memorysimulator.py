@@ -67,7 +67,7 @@ def MRU():
     pass
 
 def NUF():
-    global contagemTrocasMRU
+    global contagemTrocasNUF
     global sequenciaPags
     global tamanhoMoldura
     moldura = []
@@ -91,16 +91,16 @@ def NUF():
                     menor = min(tempodeUsoMoldura, key=tempodeUsoMoldura.get)
                     moldura.pop(moldura.index(menor))
                     moldura.append(sequenciaPags[i][j])
-                    contagemTrocasMRU += 1
+                    contagemTrocasNUF += 1
             else:
                 if sequenciaPags[i][j] in moldura:
                     tempodeUso[sequenciaPags[i][j]] += 1
                 else:
                     moldura.append(sequenciaPags[i][j])
-                    contagemTrocasMRU += 1
+                    contagemTrocasNUF += 1
         moldura.clear()
-        print(contagemTrocasMRU)
-        contagemTrocasMRU = 0
+        print(contagemTrocasNUF)
+        contagemTrocasNUF = 0
         tempodeUso.clear()
 
 def otimo():

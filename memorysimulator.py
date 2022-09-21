@@ -105,7 +105,57 @@ def NUF():
 
 def otimo():
     global contagemTrocasOtimo
+    global sequenciaPags
+    global tamanhoMoldura
+    moldura = []
+    ## criando o tempo que será necessario para certa página novamente
+    tempoNecessario = {}
+    for i in range(len(quantPags)):
+        for j in range(1, quantPags[i]+1):
+            tempoNecessario[j] = 0 
+        sequenciaPagsApagavel = sequenciaPags[i][:]
+        for j in range(len(sequenciaPags[i])):
+            if tamanhoMoldura[i] == len(moldura):
+                if sequenciaPags[i][j] in moldura:
+                    sequenciaPagsApagavel.remove(sequenciaPags[i][j])
+                    try:
+                        tempoNecessario[sequenciaPags[i][j]] = sequenciaPagsApagavel.index(sequenciaPags[i][j])
+                    except ValueError:
+                        tempoNecessario[sequenciaPags[i][j]] = 100
+                else:
+                    ## troca o que possui o maior tempo de espera
+                    tempoNecessarioMoldura = {}
+                    for k in sorted(moldura):
+                        tempoNecessarioMoldura[k] = tempoNecessario[k]
+                    maior = max(tempoNecessarioMoldura, key=tempoNecessarioMoldura.get)
+                    sequenciaPagsApagavel.remove(sequenciaPags[i][j])
+                    moldura.pop(moldura.index(maior))
+                    moldura.append(sequenciaPags[i][j])
+                    try:
+                        tempoNecessario[sequenciaPags[i][j]] = sequenciaPagsApagavel.index(sequenciaPags[i][j])
+                    except ValueError:
+                        tempoNecessario[sequenciaPags[i][j]] = 100
+                    contagemTrocasOtimo += 1
 
+            else:
+                if sequenciaPags[i][j] in moldura:
+                    sequenciaPagsApagavel.remove(sequenciaPags[i][j])
+                    try:
+                        tempoNecessario[sequenciaPags[i][j]] = sequenciaPagsApagavel.index(sequenciaPags[i][j])
+                    except ValueError:
+                        tempoNecessario[sequenciaPags[i][j]] = 100
+                else:
+                    sequenciaPagsApagavel.remove(sequenciaPags[i][j])
+                    moldura.append(sequenciaPags[i][j])
+                    try:
+                        tempoNecessario[sequenciaPags[i][j]] = sequenciaPagsApagavel.index(sequenciaPags[i][j])
+                    except ValueError:
+                        tempoNecessario[sequenciaPags[i][j]] = 100
+                    contagemTrocasOtimo += 1
+        moldura.clear()
+        print(contagemTrocasOtimo)
+        contagemTrocasOtimo = 0
+        tempoNecessario.clear()
 def main():
     pass
 
@@ -122,4 +172,4 @@ if __name__ == "__main__":
             quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
-    NUF()
+    otimo()

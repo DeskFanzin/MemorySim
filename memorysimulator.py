@@ -1,3 +1,6 @@
+from smtpd import MailmanProxy
+
+
 contagemTrocasFIFO = 0
 contagemTrocasMRU = 0
 contagemTrocasNUF = 0
@@ -64,7 +67,50 @@ def newFIFO():
         contagemTrocasFIFO = 0
 
 def MRU():
-    pass
+    global contagemTrocasMRU
+    global sequenciaPags
+    global tamanhoMoldura
+    moldura = []
+    tempodeUso = {}
+    ##criando a lista com o tempo sem uso de cada página
+    for i in range(len(quantPags)):
+        for j in range(1, quantPags[i]+1):
+            tempodeUso[j] = 0
+    ## inicio da lógica
+        for j in range(len(sequenciaPags[i])):
+            if tamanhoMoldura[i] == len(moldura):
+                if sequenciaPags[i][j] in moldura:
+                    for k in moldura:
+                        tempodeUso[k] += 1
+                    tempodeUso[sequenciaPags[i][j]] = 0
+                else:
+                    tempodeUsoMoldura = {}
+                    for k in sorted(moldura):
+                        tempodeUsoMoldura[k] = tempodeUso[k]
+                    maior = max(tempodeUsoMoldura, key=tempodeUsoMoldura.get)
+                    moldura.pop(moldura.index(maior))
+                    for k in moldura:
+                        tempodeUso[k] += 1
+                    moldura.append(sequenciaPags[i][j])
+                    tempodeUso[sequenciaPags[i][j]] = 0
+                    contagemTrocasMRU += 1
+            else:
+                if sequenciaPags[i][j] in moldura:
+                    for k in moldura:
+                        tempodeUso[k] += 1
+                    tempodeUso[sequenciaPags[i][j]] = 0
+                else:
+                    ##aumenta o tempo de cada um na moldura
+                    for k in moldura:
+                        tempodeUso[k] += 1
+                    moldura.append(sequenciaPags[i][j])
+                    tempodeUso[sequenciaPags[i][j]] = 0
+                    contagemTrocasMRU += 1
+        moldura.clear()
+        print(contagemTrocasMRU)
+        contagemTrocasMRU = 0
+        tempodeUso.clear()
+
 
 def NUF():
     global contagemTrocasNUF
@@ -176,4 +222,4 @@ if __name__ == "__main__":
             quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
-    otimo()
+    MRU()

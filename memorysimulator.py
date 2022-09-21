@@ -1,50 +1,16 @@
-from smtpd import MailmanProxy
-
-
-contagemTrocasFIFO = 0
-contagemTrocasMRU = 0
-contagemTrocasNUF = 0
-contagemTrocasOtimo = 0
+resultadosFIFO = []
+resultadosMRU = []
+resultadosNUF = []
+resultadosOtimo = []
 sequenciaPags = []
 tamanhoMoldura = []
 quantPags = []
 
-def FIFO(): ##utilize o newFIFO##
+def FIFO():
     global sequenciaPags
     global tamanhoMoldura
-    global contagemTrocasFIFO
-    moldura = []
-    ## abrindo arquivo (tem que fazer funcionar para todas as linhas, e não mudei nada além de deixar algumas variáveis globais)
-    with open ("teste.txt", "r") as arquivo:
-        arquivo = arquivo.readline()
-        arquivo = arquivo.split("|")
-        tamanhoMoldura = int(arquivo[0])
-        sequenciaPags = arquivo[2].split(" ")
-        for i in range(len(sequenciaPags)):
-            sequenciaPags[i] = int(sequenciaPags[i])
-        print(sequenciaPags)
-    ## 
-    for j in range(len(sequenciaPags)):
-        if tamanhoMoldura == len(moldura):
-            if sequenciaPags[j] in moldura:
-                pass
-            else:
-                moldura.pop(0)
-                moldura.append(sequenciaPags[j])
-                contagemTrocasFIFO += 1
-        else:
-            if sequenciaPags[j] in moldura:
-                pass
-            else:
-                moldura.append(sequenciaPags[j])
-                contagemTrocasFIFO += 1
-    print(contagemTrocasFIFO)
-    print(moldura)        
-
-def newFIFO():
-    global contagemTrocasFIFO
-    global sequenciaPags
-    global tamanhoMoldura
+    global resultadosFIFO
+    contagemTrocasFIFO = 0
     moldura = []
 
     for i in range(len(tamanhoMoldura)): ## pega cada um dos tamanhos da moldura
@@ -63,13 +29,14 @@ def newFIFO():
                     moldura.append(sequenciaPags[i][j])
                     contagemTrocasFIFO += 1
         moldura.clear()
-        print(contagemTrocasFIFO)
+        resultadosFIFO.append(contagemTrocasFIFO)
         contagemTrocasFIFO = 0
 
 def MRU():
-    global contagemTrocasMRU
+    global resultadosMRU
     global sequenciaPags
     global tamanhoMoldura
+    contagemTrocasMRU = 0
     moldura = []
     tempodeUso = {}
     ##criando a lista com o tempo sem uso de cada página
@@ -107,15 +74,16 @@ def MRU():
                     tempodeUso[sequenciaPags[i][j]] = 0
                     contagemTrocasMRU += 1
         moldura.clear()
-        print(contagemTrocasMRU)
+        resultadosMRU.append(contagemTrocasMRU)
         contagemTrocasMRU = 0
         tempodeUso.clear()
 
 
 def NUF():
-    global contagemTrocasNUF
+    global resultadosNUF
     global sequenciaPags
     global tamanhoMoldura
+    contagemTrocasNUF = 0
     moldura = []
     tempodeUso = {}
     ##criando a lista com o tempo sem uso de cada página
@@ -145,14 +113,15 @@ def NUF():
                     moldura.append(sequenciaPags[i][j])
                     contagemTrocasNUF += 1
         moldura.clear()
-        print(contagemTrocasNUF)
+        resultadosNUF.append(contagemTrocasNUF)
         contagemTrocasNUF = 0
         tempodeUso.clear()
 
 def otimo():
-    global contagemTrocasOtimo
+    global resultadosOtimo
     global sequenciaPags
     global tamanhoMoldura
+    contagemTrocasOtimo = 0
     moldura = []
     ## criando o tempo que será necessario para certa página novamente
     tempoNecessario = {}
@@ -203,13 +172,10 @@ def otimo():
                         tempoNecessario[sequenciaPags[i][j]] = 100
                     contagemTrocasOtimo += 1
         moldura.clear()
-        print(contagemTrocasOtimo)
+        resultadosOtimo.append(contagemTrocasOtimo)
         contagemTrocasOtimo = 0
         tempoNecessario.clear()
 def main():
-    pass
-
-if __name__ == "__main__":
     with open("inMemoria.txt", "r") as arquivo:
         while linha := arquivo.readline():
             linha = linha.split("|")
@@ -222,4 +188,42 @@ if __name__ == "__main__":
             quantPags[i] = int(quantPags[i])
             for j in range(len(sequenciaPags[i])):
                 sequenciaPags[i][j] = int(sequenciaPags[i][j])
+    FIFO()
     MRU()
+    NUF()
+    otimo()
+    listaResultados = []
+    empate = False
+    maisProxOtimo = 0
+    for i in range(len(resultadosFIFO)):
+        listaResultados.append([resultadosFIFO[i], resultadosMRU[i], resultadosNUF[i]])
+        ##acha o resultado mais próximo do ótimo na lista de resultados
+        maisProxOtimo = min(listaResultados[i], key=lambda x:abs(x-resultadosOtimo[i]))
+        ## acha se tem resultados duplicados
+        dup = set()
+        duplicados = []
+        for x in listaResultados[i]:
+            if x in dup:
+                duplicados.append(x)
+            else:
+                dup.add(x)
+        try:
+            if duplicados[0] == maisProxOtimo:
+                empate = True
+            else:
+                empate = False
+        except IndexError:
+            empate = False
+        
+        
+        if empate == True:    
+            print("{}|{}|{}|{}|empate".format(resultadosFIFO[i], resultadosMRU[i], resultadosNUF[i], resultadosOtimo[i]))
+        else:
+            if maisProxOtimo == resultadosFIFO[i]:
+                print("{}|{}|{}|{}|FIFO".format(resultadosFIFO[i], resultadosMRU[i], resultadosNUF[i], resultadosOtimo[i]))
+            elif maisProxOtimo == resultadosMRU[i]:
+                print("{}|{}|{}|{}|MRU".format(resultadosFIFO[i], resultadosMRU[i], resultadosNUF[i], resultadosOtimo[i]))
+            elif maisProxOtimo == resultadosNUF[i]:
+                print("{}|{}|{}|{}|NUF".format(resultadosFIFO[i], resultadosMRU[i], resultadosNUF[i], resultadosOtimo[i]))            
+        empate = False
+main()

@@ -126,6 +126,10 @@ def otimo():
                     ## troca o que possui o maior tempo de espera
                     tempoNecessarioMoldura = {}
                     for k in sorted(moldura):
+                        try:
+                            tempoNecessario[k] = sequenciaPagsApagavel.index(k)
+                        except ValueError:
+                            tempoNecessario[k] = 100
                         tempoNecessarioMoldura[k] = tempoNecessario[k]
                     maior = max(tempoNecessarioMoldura, key=tempoNecessarioMoldura.get)
                     sequenciaPagsApagavel.remove(sequenciaPags[i][j])
